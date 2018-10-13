@@ -177,10 +177,10 @@ class DQNChecker(Agent):
             self.train_model()
 
     def get_action_index(self, pred):
-        from_row = pred[1]
-        from_col = pred[2]
-        to_row = pred[3]
-        to_col = pred[4]
+        from_row = pred[0]
+        from_col = pred[1]
+        to_row = pred[2]
+        to_col = pred[3]
         action = (np.argmax(from_row), np.argmax(from_col), np.argmax(to_row), np.argmax(to_col))
         return action
         
