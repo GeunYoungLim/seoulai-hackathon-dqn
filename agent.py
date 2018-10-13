@@ -163,8 +163,17 @@ class DQNChecker(Agent):
                 print('O', end='', flush=True)
 
         return int(action[0]), int(action[1]), int(action[2]), int(action[3])
+    def consume(self, obs: List[List], reward: float, done: bool, **kwargs):
+    #def consume(self, state, action, next_state, reward: float, done: bool):
+        for key in ['action', 'next_state'] :
+            if key not in kwargs:
+                print('not train')
+                return
+        
+        state = obs
+        action = kwargs['action']
+        next_state = kwargs['next_state']
 
-    def consume(self, state, action, next_state, reward: float, done: bool):
         state = board_list2numpy(state, self.board_enc)
         state = np.reshape(state, (-1, 8, 8, 1))
 

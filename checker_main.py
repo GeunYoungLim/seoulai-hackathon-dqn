@@ -17,7 +17,7 @@ if __name__ == "__main__":
     args = argparse.ArgumentParser()
     args.add_argument('--render', type=bool, default=False)
     args.add_argument('--episodes', type=int, default=3000)
-    args.add_argument('--thresold', type=int, default=1000)
+    args.add_argument('--thresold', type=int, default=1500)
 
     config = args.parse_args()
 
@@ -52,7 +52,7 @@ if __name__ == "__main__":
             action = (from_row, from_col, to_row, to_col)
             #next_state = np.reshape(next_state, [1, state_size])
             
-            current_agent.consume(state, action, next_state, reward, done)
+            current_agent.consume(state, reward, done, action=action, next_state=next_state)
 
             score += reward
             state = next_state
