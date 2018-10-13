@@ -63,10 +63,10 @@ class DQNChecker(Agent):
         # 타깃 모델 초기화
         self.update_target_model()
 
-        print('model load complete.', self.name)
+        print('model load complete.',name)
 
         if self.load_model:
-            self.model.load_weights("./save_model/cartpole_dqn_trained"+ self.name + ".h5")
+            self.model.load_weights("./save_model/cartpole_dqn_trained"+ name + ".h5")
 
     # 상태가 입력, 큐함수가 출력인 인공신경망 생성
     def build_model(self):
