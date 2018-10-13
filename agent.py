@@ -18,7 +18,6 @@ from seoulai_gym.envs.checkers.rules import Rules
 from seoulai_gym.envs.checkers.utils import board_list2numpy
 from seoulai_gym.envs.checkers.utils import BoardEncoding
 
-
 class DQNChecker(Agent):
     def __init__(self, name: str, ptype: int):
         self.board_enc = BoardEncoding()
@@ -155,7 +154,18 @@ class DQNChecker(Agent):
         else:
             pred = self.model.predict(state)[0]
             action = self.get_action_index(pred[0][0])
-            
+
+            p_from_row = int(action[0])
+            p_from_col = int(action[1])
+            p_to_row = int(action[2])
+            p_to_col = int(action[3])
+
+            if not Rules.validate_move(raw_state, p_from_row, p_from_col, p_to_row, p_to_col):
+                valid_moves = Rules.generate_valid_moves(raw_state, self.ptype, len(raw_state))
+                rand_from_row, rand_from_col = random.choice(list(valid_moves.keys()))
+                rand_to_row, rand_to_col = random.choice(valid_moves[(rand_from_row, rand_from_col)])
+                action = (rand_from_row, rand_from_col, rand_to_row, rand_to_col)
+                
         return int(action[0]), int(action[1]), int(action[2]), int(action[3])
 
     def consume(self, state, action, next_state, reward: float, done: bool):
