@@ -3,6 +3,7 @@ seoulai hackathon 2018
 """
 import pylab
 import numpy as np
+import argparse
 
 import seoulai_gym as gym
 from seoulai_gym.envs.checkers.agents import RandomAgentLight
@@ -11,11 +12,14 @@ from seoulai_gym.envs.checkers.base import Constants
 
 from agent import DQNChecker
 
-EPISODES = 3000
-
-RENDER = True
-
 if __name__ == "__main__":
+    args = argparse.ArgumentParser()
+    # DONOTCHANGE: They are reserved for nsml
+    args.add_argument('--render', type=bool, default=False)
+    args.add_argument('--episodes', type=int, default=3000)
+    config = args.parse_args()
+
+
     # CartPole-v1 환경, 최대 타임스텝 수가 500
     #env = gym.make('CartPole-v1')
     env = gym.make("Checkers")
@@ -34,7 +38,7 @@ if __name__ == "__main__":
     agent_tag[a1] = 'Agent_1'
     agent_tag[a2] = 'Agent_2'
 
-    for e in range(EPISODES):
+    for e in range(config.episodes):
         done = False
         score = 0
         # env 초기화
@@ -46,7 +50,7 @@ if __name__ == "__main__":
 
 
         while not done:
-            if RENDER:
+            if config.render:
                 env.render()
 
             # 현재 상태로 행동을 선택
