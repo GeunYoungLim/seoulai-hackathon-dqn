@@ -156,12 +156,12 @@ class DQNChecker(Agent):
         if len(self.memory) >= self.train_start:
             self.train_model()
 
-    def get_action_index(pred):
+    def get_action_index(self, pred):
         from_row = pred[0:8]
         from_col = pred[8:16]
         to_row = pred[16:24]
         to_col = pred[24:32]
-        action = np.amax(from_row), np.amax(from_col), np.amax(to_row), np.amax(to_col))
+        action = (np.amax(from_row), np.amax(from_col), np.amax(to_row), np.amax(to_col))
         return action
         
         
