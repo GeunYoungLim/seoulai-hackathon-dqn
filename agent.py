@@ -32,14 +32,14 @@ class DQNChecker(Agent):
 
             self.board_enc.dark = 0.5
             self.board_enc.light = -0.5
-            self.baord_enc.dark_king = 1.
+            self.board_enc.dark_king = 1.
             self.board_enc.light_king = -1.
 
         elif ptype == Constants().LIGHT:
             
             self.board_enc.dark = -0.5
             self.board_enc.light = 0.5
-            self.baord_enc.dark_king = -1.
+            self.board_enc.dark_king = -1.
             self.board_enc.light_king = 1.
         else:
             raise ValueError
