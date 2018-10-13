@@ -11,7 +11,7 @@ from seoulai_gym.envs.checkers.base import Constants
 
 from agent import DQNChecker
 
-EPISODES = 300
+EPISODES = 3000
 
 RENDER = True
 
@@ -54,8 +54,7 @@ if __name__ == "__main__":
             #next_state = np.reshape(next_state, [1, state_size])
             
             # # 에피소드가 중간에 끝나면 -100 보상
-            if not done and 'invalid_move' in info:
-                done = True
+            if 'invalid_move' in info:
                 reward = -100
 
             current_agent.consume(state, action, next_state, reward, done)
