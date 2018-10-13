@@ -14,8 +14,7 @@ from typing import Tuple
 from seoulai_gym.envs.checkers.agents import Agent
 from seoulai_gym.envs.checkers.base import Constants
 from seoulai_gym.envs.checkers.rules import Rules
-from seoulai_gym.envs.checkers.utils import generate_random_move
-from seoulai_gym.envs.checkers.utils import board_list2numpy
+from seoulai_gym.envs.checkers.utils import board_list2numpy, generate_random_move
 from seoulai_gym.envs.checkers.utils import BoardEncoding
 
 
