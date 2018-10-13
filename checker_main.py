@@ -4,6 +4,7 @@ seoulai hackathon 2018
 import pylab
 import numpy as np
 import argparse
+import sys
 
 import seoulai_gym as gym
 from seoulai_gym.envs.checkers.agents import RandomAgentLight
@@ -16,6 +17,7 @@ if __name__ == "__main__":
     args = argparse.ArgumentParser()
     args.add_argument('--render', type=bool, default=False)
     args.add_argument('--episodes', type=int, default=3000)
+    args.add_arugment('--thresold', type=int, default=1000)
 
     config = args.parse_args()
 
@@ -74,7 +76,7 @@ if __name__ == "__main__":
                     pylab.savefig("./save_graph/checker_dqn"+ tag +".png")
 
                     scores = history[agent]['scores']
-                    if np.mean(scores[-min(10, len(scores)):]) > 900:
+                    if e > 10 and np.mean(scores[-min(10, len(scores)):]) > config.thresold:
                         agent.model.save_weights("./save_model/checker_dqn.h5")
                         sys.exit()
 
