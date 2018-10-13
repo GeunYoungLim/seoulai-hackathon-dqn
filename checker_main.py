@@ -50,6 +50,7 @@ if __name__ == "__main__":
             from_row, from_col, to_row, to_col = current_agent.act(state)
             # 선택한 행동으로 환경에서 한 타임스텝 진행
             next_state, reward, done, info = env.step(current_agent, from_row, from_col, to_row, to_col)
+            action = (from_row, from_col, to_row, to_col)
             #next_state = np.reshape(next_state, [1, state_size])
             
             # # 에피소드가 중간에 끝나면 -100 보상
