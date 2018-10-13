@@ -22,10 +22,19 @@ from seoulai_gym.envs.checkers.utils import BoardEncoding
 
 class DQNChecker(Agent):
     def __init__(self, name: str, ptype: int):
+        self.board_enc = BoardEncoding()
         
         if ptype == Constants().DARK:
+
+            self.board_enc.dark = 1
+            self.board_enc.light = -1
+
             name = "RandomAgentDark"
         elif ptype == Constants().LIGHT:
+            
+            self.board_enc.dark = -1
+            self.board_enc.light = 1
+
             name = "RandomAgentLight"
         else:
             raise ValueError
@@ -58,9 +67,7 @@ class DQNChecker(Agent):
         # 타깃 모델 초기화
         self.update_target_model()
 
-        self.board_enc = BoardEncoding()
-        self.board_enc.dark = 1
-        self.board_enc.light = -1
+
 
         if self.load_model:
             self.model.load_weights("./save_model/cartpole_dqn_trained.h5")
