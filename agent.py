@@ -163,7 +163,7 @@ class DQNChecker(Agent):
         from_col = pred[8:16]
         to_row = pred[16:24]
         to_col = pred[24:32]
-        action = (np.amax(from_row), np.amax(from_col), np.amax(to_row), np.amax(to_col))
+        action = (np.argmax(from_row), np.argmax(from_col), np.argmax(to_row), np.argmax(to_col))
         return action
         
         
