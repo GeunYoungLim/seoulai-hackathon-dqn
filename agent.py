@@ -5,7 +5,7 @@ from collections import deque
 from keras.optimizers import Adam
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten
-from keras.layers import Conv2D, MaxPooling2D
+from keras.layers import Conv2D, MaxPooling2D, Conv2DTranspose
 
 from typing import List
 from typing import Tuple
@@ -21,12 +21,6 @@ from seoulai_gym.envs.checkers.utils import BoardEncoding
 class DQNChecker(Agent):
     def __init__(self, name: str, ptype: int):
         self.board_enc = BoardEncoding()
-        #  self.empty = 0
-        # self.dark = 10
-        # self.dark_king = 11
-        # self.light = 20
-        # self.light_king = 21
-
         if ptype == Constants().DARK:
 
             self.board_enc.dark = 0.5
@@ -74,24 +68,23 @@ class DQNChecker(Agent):
         print('model load complete.',name)
 
         if self.load_model:
-            self.model.load_weights("./save_model/cartpole_dqn_trained"+ name + ".h5")
+            self.model.load_weights("./save_model/cartpole_dqn_trained.h5")
 
     # 상태가 입력, 큐함수가 출력인 인공신경망 생성
     def build_model(self):
         model = Sequential()
         # 8 x 8 -> 4 x 4
-        model.add(Conv2D(16, kernel_size=(3, 3), strides=(2, 2), activation='relu', padding='same', input_shape=(8, 8, 1)))
+        model.add(Conv2D(8, kernel_size=(3, 3), strides=(2, 2), activation='relu', padding='same', input_shape=(8, 8, 1)))
         # 4 x 4 -> 2 x 2
         model.add(Conv2D(16, kernel_size=(3, 3), strides=(2, 2),activation='relu', padding='same'))
         # 2 X 2 -> 1 x 1
-        model.add(Conv2D(16, kernel_size=(3, 3), strides=(2, 2),activation='relu', padding='same'))
-    
-        model.add(Dense(8, activation='relu',
-                        kernel_initializer='he_uniform'))
-        model.add(Dense(16, activation='relu',
-                        kernel_initializer='he_uniform'))
-        model.add(Dense(32, activation='linear',
-                        kernel_initializer='he_uniform'))
+        model.add(Conv2D(32, kernel_size=(3, 3), strides=(2, 2),activation='relu', padding='same'))
+        # 1 X 1 -> 2 X 2
+        model.add(Conv2DTranspose(16 ,kernel_size=(3, 3), strides=(2, 2), padding='same'))
+        # 2 x 2 -> 4 x 4
+        model.add(Conv2DTranspose(8 ,kernel_size=(3, 3), strides=(2, 2), padding='same'))
+        # 4 X 4 -> 4 X 8
+        model.add(Conv2DTranspose(1 ,kernel_size=(3, 3), strides=(1, 2), padding='same'))
         model.summary()
         model.compile(loss='mse', optimizer=Adam(lr=self.learning_rate))
         return model
@@ -132,11 +125,11 @@ class DQNChecker(Agent):
         for i in range(self.batch_size):
             if dones[i]:
                 for action in actions[i]:
-                    target[i][0][0][action] = rewards[i]
+                    target[i][action] = rewards[i]
             else:
                 for classes, action in enumerate(actions[i]):
-                    target_action = self.get_action_index(target_val[i][0][0])
-                    target[i][0][0][action] = rewards[i] + self.discount_factor * (np.amax(target_action[classes]))
+                    target_action = self.get_action_index(target_val[i][0])
+                    target[i][action] = rewards[i] + self.discount_factor * (np.amax(target_action[classes]))
 
         self.model.fit(states, target, batch_size=self.batch_size,
                        epochs=1, verbose=0)
@@ -153,7 +146,7 @@ class DQNChecker(Agent):
             action = (rand_from_row, rand_from_col, rand_to_row, rand_to_col)
         else:
             pred = self.model.predict(state)[0]
-            action = self.get_action_index(pred[0][0])
+            action = self.get_action_index(pred)
 
             p_from_row = int(action[0])
             p_from_col = int(action[1])
@@ -161,11 +154,14 @@ class DQNChecker(Agent):
             p_to_col = int(action[3])
 
             if not Rules.validate_move(raw_state, p_from_row, p_from_col, p_to_row, p_to_col):
+                print('X', end='', flush=True)
                 valid_moves = Rules.generate_valid_moves(raw_state, self.ptype, len(raw_state))
                 rand_from_row, rand_from_col = random.choice(list(valid_moves.keys()))
                 rand_to_row, rand_to_col = random.choice(valid_moves[(rand_from_row, rand_from_col)])
                 action = (rand_from_row, rand_from_col, rand_to_row, rand_to_col)
-                
+            else:
+                print('O', end='', flush=True)
+
         return int(action[0]), int(action[1]), int(action[2]), int(action[3])
 
     def consume(self, state, action, next_state, reward: float, done: bool):
@@ -181,10 +177,10 @@ class DQNChecker(Agent):
             self.train_model()
 
     def get_action_index(self, pred):
-        from_row = pred[0:8]
-        from_col = pred[8:16]
-        to_row = pred[16:24]
-        to_col = pred[24:32]
+        from_row = pred[1]
+        from_col = pred[2]
+        to_row = pred[3]
+        to_col = pred[4]
         action = (np.argmax(from_row), np.argmax(from_col), np.argmax(to_row), np.argmax(to_col))
         return action
         
