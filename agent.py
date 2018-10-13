@@ -29,11 +29,11 @@ class DQNChecker(Agent):
         else:
             raise ValueError
 
-        super.__init__(name, ptype)
+        super().__init__(name, ptype)
 
         self.render = False
         self.load_model = False
-
+ 
         # 상태와 행동의 크기 정의
         #self.state_size = (8, 8, 1)
         self.action_size = 4
