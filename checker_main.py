@@ -17,7 +17,7 @@ if __name__ == "__main__":
     args = argparse.ArgumentParser()
     args.add_argument('--render', type=bool, default=False)
     args.add_argument('--episodes', type=int, default=3000)
-    args.add_arugment('--thresold', type=int, default=1000)
+    args.add_argument('--thresold', type=int, default=1000)
 
     config = args.parse_args()
 
