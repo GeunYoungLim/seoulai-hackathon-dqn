@@ -70,6 +70,11 @@ class DQNChecker(Agent):
         if self.load_model:
             self.model.load_weights("./save_model/cartpole_dqn_trained.h5")
 
+        self.training_mode = False
+
+    def set_training_mode(self, is_training):
+        self.is_training = is_training
+
     # 상태가 입력, 큐함수가 출력인 인공신경망 생성
     def build_model(self):
         model = Sequential()
@@ -139,7 +144,7 @@ class DQNChecker(Agent):
         state = board_list2numpy(state, self.board_enc)
         state = np.reshape(state, (-1, 8, 8, 1))
 
-        if np.random.rand() <= self.epsilon:
+        if self.training_mode and np.random.rand() <= self.epsilon:
             valid_moves = Rules.generate_valid_moves(raw_state, self.ptype, len(raw_state))
             rand_from_row, rand_from_col = random.choice(list(valid_moves.keys()))
             rand_to_row, rand_to_col = random.choice(valid_moves[(rand_from_row, rand_from_col)])
