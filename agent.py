@@ -143,7 +143,8 @@ class DQNChecker(Agent):
         else:
             pred = self.model.predict(state)[0]
             action = self.get_action_index(pred[0][0])
-        return action[0], action[1], action[2], action[3]
+            
+        return int(action[0]), int(action[1]), int(action[2]), int(action[3])
 
     def consume(self, state, action, next_state, reward: float, done: bool):
         state = board_list2numpy(state, self.board_enc)
