@@ -61,11 +61,9 @@ if __name__ == "__main__":
             next_agent = temporary_agent
 
             if done:
-                
                 # 각 에피소드마다 타깃 모델을 모델의 가중치로 업데이트
                 current_agent.update_target_model()
                 next_agent.update_target_model()
-                # score = score if score == 500 else score + 100
                 # 에피소드마다 학습 결과 출력
                 for agent in [current_agent, next_agent]:
                     history[agent]['scores'].append(score)
@@ -74,9 +72,13 @@ if __name__ == "__main__":
 
                     pylab.plot(history[agent]['episodes'], history[agent]['scores'], 'b')
                     pylab.savefig("./save_graph/checker_dqn"+ tag +".png")
-                    agent.model.save_weights("./save_model/checker_dqn"+ tag + ".h5")
+
+                    scores = history[agent]['scores']
+                    if np.mean(scores[-min(10, len(scores)):]) > 900:
+                        agent.model.save_weights("./save_model/checker_dqn.h5")
+                        sys.exit()
 
                 print('Game over!', current_agent, "agent wins!", "episode:", e, "  score:", score, "  memory length:",
                         len(current_agent.memory), "  epsilon:", current_agent.epsilon)
 
-                #sys.exit()
+                
