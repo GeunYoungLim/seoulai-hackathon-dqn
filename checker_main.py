@@ -30,6 +30,9 @@ if __name__ == "__main__":
     history = {}
     history[a1] = {'scores': [], 'episodes': []}
     history[a2] = {'scores': [], 'episodes': []}
+    agent_tag = {}
+    agent_tag[a1] = 'Agent_1'
+    agent_tag[a2] = 'Agent_2'
 
     for e in range(EPISODES):
         done = False
@@ -55,7 +58,7 @@ if __name__ == "__main__":
             
             # # 에피소드가 중간에 끝나면 -100 보상
             if 'invalid_move' in info:
-                reward = -100
+                reward = -10
 
             current_agent.consume(state, action, next_state, reward, done)
 
@@ -71,17 +74,21 @@ if __name__ == "__main__":
                 
                 # 각 에피소드마다 타깃 모델을 모델의 가중치로 업데이트
                 current_agent.update_target_model()
-
+                next_agent.update_target_model()
                 # score = score if score == 500 else score + 100
                 # 에피소드마다 학습 결과 출력
-                history[current_agent]['scores'].append(score)
-                history[current_agent]['episodes'].append(e)
+                for agent in [current_agent, next_agent]:
+                    history[agent]['scores'].append(score)
+                    history[agent]['episodes'].append(e)
+                    tag = agent_tag[agent]
 
-                pylab.plot(history[current_agent]['scores'], history[current_agent]['episodes'], 'b')
-                pylab.savefig("./save_graph/agent1/checker_dqn.png")
-                print('Game over!', current_agent, "agent wins!","episode:", e, "  score:", score, "  memory length:",
-                      len(current_agent.memory), "  epsilon:", current_agent.epsilon)
+                    pylab.plot(history[agent]['episodes'], history[agent]['scores'], 'b')
+                    pylab.savefig("./save_graph/checker_dqn"+ tag +".png")
+                    agent.model.save_weights("./save_model/checker_dqn"+ tag + ".h5")
+
+                print('Game over!', current_agent, "agent wins!", "episode:", e, "  score:", score, "  memory length:",
+                        len(current_agent.memory), "  epsilon:", current_agent.epsilon)
 
                 # 이전 10개 에피소드의 점수 평균이 490보다 크면 학습 중단
-                current_agent.model.save_weights("./save_model/checker_dqn.h5")
+                
                 #sys.exit()
