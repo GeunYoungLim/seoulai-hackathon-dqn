@@ -58,6 +58,10 @@ class DQNChecker(Agent):
         # 타깃 모델 초기화
         self.update_target_model()
 
+        self.board_enc = BoardEncoding()
+        self.board_enc.dark = 1
+        self.board_enc.light = -1
+
         if self.load_model:
             self.model.load_weights("./save_model/cartpole_dqn_trained.h5")
 
@@ -132,10 +136,8 @@ class DQNChecker(Agent):
                        epochs=1, verbose=0)
 
     def act(self, state):
-        enc = BoardEncoding()
-        enc.dark = 1
-        enc.light = -1
-        board_numpy = board_list2numpy(state, enc)
+        
+        board_numpy = board_list2numpy(state, self.board_enc)
         board_numpy = np.reshape(board_numpy, (-1, 8, 8, 1))
 
         if np.random.rand() <= self.epsilon:
@@ -150,6 +152,12 @@ class DQNChecker(Agent):
         return action[0], action[1], action[2], action[3]
 
     def consume(self, state, action, next_state, reward: float, done: bool):
+        state = board_list2numpy(state, self.board_enc)
+        state = np.reshape(state, (-1, 8, 8, 1))
+
+        next_state = board_list2numpy(next_state, self.board_enc)
+        next_state = np.reshape(next_state, (-1, 8, 8, 1))
+
         self.append_sample(state, action, reward, next_state, done)
         
         if len(self.memory) >= self.train_start:

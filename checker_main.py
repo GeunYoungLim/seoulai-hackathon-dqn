@@ -67,6 +67,7 @@ if __name__ == "__main__":
             next_agent = temporary_agent
 
             if done:
+                
                 # 각 에피소드마다 타깃 모델을 모델의 가중치로 업데이트
                 current_agent.update_target_model()
 
@@ -77,7 +78,7 @@ if __name__ == "__main__":
 
                 pylab.plot(history[current_agent]['scores'], history[current_agent]['episodes'], 'b')
                 pylab.savefig("./save_graph/agent1/checker_dqn.png")
-                print("episode:", e, "  score:", score, "  memory length:",
+                print('Game over!', current_agent, "agent wins!","episode:", e, "  score:", score, "  memory length:",
                       len(current_agent.memory), "  epsilon:", current_agent.epsilon)
 
                 # 이전 10개 에피소드의 점수 평균이 490보다 크면 학습 중단
