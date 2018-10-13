@@ -36,7 +36,7 @@ if __name__ == "__main__":
         score = 0
         # env 초기화
 #        state = env.reset()
-        s = env.reset()
+        state = env.reset()
         
         current_agent = a1
         next_agent = a2
