@@ -54,7 +54,9 @@ if __name__ == "__main__":
             #next_state = np.reshape(next_state, [1, state_size])
             
             # # 에피소드가 중간에 끝나면 -100 보상
-            # reward = reward if not done or score == 499 else -100
+            if not done and 'invalid_move' in info:
+                done = True
+                reward = -100
 
             current_agent.consume(state, action, next_state, reward, done)
 
