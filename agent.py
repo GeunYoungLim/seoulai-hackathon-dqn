@@ -123,8 +123,9 @@ class DQNChecker(Agent):
                 for action in actions[i]:
                     target[i][action] = rewards[i]
             else:
-                for action in actions[i]:
-                    target[i][action] = rewards[i] + self.discount_factor * (np.amax(target_val[i][action]))
+                for classes, action in enumerate(actions[i]):
+                    target_action = get_action_index(target_val[i])
+                    target[i][action] = rewards[i] + self.discount_factor * (np.amax(target_action[classes]))
 
         self.model.fit(states, target, batch_size=self.batch_size,
                        epochs=1, verbose=0)
