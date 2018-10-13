@@ -131,8 +131,8 @@ class DQNChecker(Agent):
                        epochs=1, verbose=0)
 
     def act(self, state):
-        board_numpy = board_list2numpy(state, self.board_enc)
-        board_numpy = np.reshape(board_numpy, (-1, 8, 8, 1))
+        state = board_list2numpy(state, self.board_enc)
+        state = np.reshape(state, (-1, 8, 8, 1))
 
         if np.random.rand() <= self.epsilon:
             valid_moves = Rules.generate_valid_moves(state, self.ptype, len(state))
