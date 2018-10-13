@@ -154,13 +154,13 @@ class DQNChecker(Agent):
             p_to_col = int(action[3])
 
             if not Rules.validate_move(raw_state, p_from_row, p_from_col, p_to_row, p_to_col):
-                print('X', end='', flush=True)
+                print('-', end='', flush=True)
                 valid_moves = Rules.generate_valid_moves(raw_state, self.ptype, len(raw_state))
                 rand_from_row, rand_from_col = random.choice(list(valid_moves.keys()))
                 rand_to_row, rand_to_col = random.choice(valid_moves[(rand_from_row, rand_from_col)])
                 action = (rand_from_row, rand_from_col, rand_to_row, rand_to_col)
             else:
-                print('O', end='', flush=True)
+                print('@', end='', flush=True)
 
         return int(action[0]), int(action[1]), int(action[2]), int(action[3])
     def consume(self, obs: List[List], reward: float, done: bool, **kwargs):
