@@ -24,8 +24,8 @@ if __name__ == "__main__":
     # action_size = env.action_space.n
 
     # DQN 에이전트 생성
-    a1 = DQNChecker("Agent 1", Constants().DARK)
-    a2 = DQNChecker("Agent 2", Constants().LIGHT)
+    a1 = DQNChecker("Agent_1", Constants().DARK)
+    a2 = DQNChecker("Agent_2", Constants().LIGHT)
 
     history = {}
     history[a1] = {'scores': [], 'episodes': []}

@@ -28,14 +28,10 @@ class DQNChecker(Agent):
 
             self.board_enc.dark = 1
             self.board_enc.light = -1
-
-            name = "RandomAgentDark"
         elif ptype == Constants().LIGHT:
-            
+
             self.board_enc.dark = -1
             self.board_enc.light = 1
-
-            name = "RandomAgentLight"
         else:
             raise ValueError
 
@@ -52,13 +48,13 @@ class DQNChecker(Agent):
         self.discount_factor = 0.99
         self.learning_rate = 0.001
         self.epsilon = 1.0
-        self.epsilon_decay = 0.999
+        self.epsilon_decay = 0.9999
         self.epsilon_min = 0.01
-        self.batch_size = 32
+        self.batch_size = 64
         self.train_start = 1000
 
         # 리플레이 메모리, 최대 크기 2000
-        self.memory = deque(maxlen=2000)
+        self.memory = deque(maxlen=4000)
 
         # 모델과 타깃 모델 생성
         self.model = self.build_model()
@@ -67,10 +63,10 @@ class DQNChecker(Agent):
         # 타깃 모델 초기화
         self.update_target_model()
 
-
+        print('model load complete.', self.name)
 
         if self.load_model:
-            self.model.load_weights("./save_model/cartpole_dqn_trained.h5")
+            self.model.load_weights("./save_model/cartpole_dqn_trained"+ self.name + ".h5")
 
     # 상태가 입력, 큐함수가 출력인 인공신경망 생성
     def build_model(self):
