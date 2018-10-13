@@ -77,9 +77,9 @@ class DQNChecker(Agent):
     
         model.add(Dense(8, activation='relu',
                         kernel_initializer='he_uniform'))
-        model.add(Dense(8, activation='relu',
+        model.add(Dense(16, activation='relu',
                         kernel_initializer='he_uniform'))
-        model.add(Dense(self.action_size, activation='linear',
+        model.add(Dense(32, activation='linear',
                         kernel_initializer='he_uniform'))
         model.summary()
         model.compile(loss='mse', optimizer=Adam(lr=self.learning_rate))
@@ -88,13 +88,6 @@ class DQNChecker(Agent):
     def update_target_model(self):
         self.target_model.set_weights(self.model.get_weights())
 
-    # 입실론 탐욕 정책으로 행동 선택
-    def get_action(self, state):
-        if np.random.rand() <= self.epsilon:
-            return random.randrange(self.action_size)
-        else:
-            q_value = self.model.predict(state)
-            return np.argmax(q_value[0])
 
     # 샘플 <s, a, r, s'>을 리플레이 메모리에 저장
     def append_sample(self, state, action, reward, next_state, done):
@@ -127,16 +120,16 @@ class DQNChecker(Agent):
         # 벨만 최적 방정식을 이용한 업데이트 타깃
         for i in range(self.batch_size):
             if dones[i]:
-                target[i][actions[i]] = rewards[i]
+                for action in actions[i]:
+                    target[i][action] = rewards[i]
             else:
-                target[i][actions[i]] = rewards[i] + self.discount_factor * (
-                    np.amax(target_val[i]))
+                for action in actions[i]:
+                    target[i][action] = rewards[i] + self.discount_factor * (np.amax(target_val[i][action]))
 
         self.model.fit(states, target, batch_size=self.batch_size,
                        epochs=1, verbose=0)
 
     def act(self, state):
-        
         board_numpy = board_list2numpy(state, self.board_enc)
         board_numpy = np.reshape(board_numpy, (-1, 8, 8, 1))
 
@@ -146,9 +139,8 @@ class DQNChecker(Agent):
             rand_to_row, rand_to_col = random.choice(valid_moves[(rand_from_row, rand_from_col)])
             action = (rand_from_row, rand_from_col, rand_to_row, rand_to_col)
         else:
-            action = self.model.predict(state)[0]
-            #action = np.argmax(q_value[0])
-        
+            pred = self.model.predict(state)[0]
+            action = self.get_action_index(pred)
         return action[0], action[1], action[2], action[3]
 
     def consume(self, state, action, next_state, reward: float, done: bool):
@@ -162,5 +154,13 @@ class DQNChecker(Agent):
         
         if len(self.memory) >= self.train_start:
             self.train_model()
+
+    def get_action_index(pred):
+        from_row = pred[0:8]
+        from_col = pred[8:16]
+        to_row = pred[16:24]
+        to_col = pred[24:32]
+        action = np.amax(from_row), np.amax(from_col), np.amax(to_row), np.amax(to_col))
+        return action
         
         
