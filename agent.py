@@ -142,7 +142,7 @@ class DQNChecker(Agent):
             action = (rand_from_row, rand_from_col, rand_to_row, rand_to_col)
         else:
             pred = self.model.predict(state)[0]
-            action = self.get_action_index(pred)
+            action = self.get_action_index(pred[0][0])
         return action[0], action[1], action[2], action[3]
 
     def consume(self, state, action, next_state, reward: float, done: bool):
