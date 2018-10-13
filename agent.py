@@ -147,12 +147,15 @@ class DQNChecker(Agent):
         return int(action[0]), int(action[1]), int(action[2]), int(action[3])
 
     def consume(self, state, action, next_state, reward: float, done: bool):
+        if done:
+            return
+            
         state = board_list2numpy(state, self.board_enc)
         state = np.reshape(state, (-1, 8, 8, 1))
 
         next_state = board_list2numpy(next_state, self.board_enc)
         next_state = np.reshape(next_state, (-1, 8, 8, 1))
-
+        
         self.append_sample(state, action, reward, next_state, done)
         
         if len(self.memory) >= self.train_start:
