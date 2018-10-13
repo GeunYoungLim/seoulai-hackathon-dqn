@@ -14,20 +14,13 @@ from agent import DQNChecker
 
 if __name__ == "__main__":
     args = argparse.ArgumentParser()
-    # DONOTCHANGE: They are reserved for nsml
     args.add_argument('--render', type=bool, default=False)
     args.add_argument('--episodes', type=int, default=3000)
+
     config = args.parse_args()
 
-
-    # CartPole-v1 환경, 최대 타임스텝 수가 500
-    #env = gym.make('CartPole-v1')
     env = gym.make("Checkers")
 
-    # state_size = env.observation_space.shape[0]
-    # action_size = env.action_space.n
-
-    # DQN 에이전트 생성
     a1 = DQNChecker("Agent_1", Constants().DARK)
     a2 = DQNChecker("Agent_2", Constants().LIGHT)
 
@@ -41,13 +34,10 @@ if __name__ == "__main__":
     for e in range(config.episodes):
         done = False
         score = 0
-        # env 초기화
-#        state = env.reset()
+
         state = env.reset()
-        
         current_agent = a1
         next_agent = a2
-
 
         while not done:
             if config.render:
@@ -60,10 +50,6 @@ if __name__ == "__main__":
             action = (from_row, from_col, to_row, to_col)
             #next_state = np.reshape(next_state, [1, state_size])
             
-            # # 에피소드가 중간에 끝나면 -100 보상
-            if 'invalid_move' in info:
-                reward = -10
-
             current_agent.consume(state, action, next_state, reward, done)
 
             score += reward
@@ -93,6 +79,4 @@ if __name__ == "__main__":
                 print('Game over!', current_agent, "agent wins!", "episode:", e, "  score:", score, "  memory length:",
                         len(current_agent.memory), "  epsilon:", current_agent.epsilon)
 
-                # 이전 10개 에피소드의 점수 평균이 490보다 크면 학습 중단
-                
                 #sys.exit()

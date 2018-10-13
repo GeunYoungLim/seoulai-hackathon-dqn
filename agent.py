@@ -1,5 +1,4 @@
 import sys
-import pylab
 import random
 import numpy as np
 from collections import deque
@@ -23,15 +22,25 @@ from seoulai_gym.envs.checkers.utils import BoardEncoding
 class DQNChecker(Agent):
     def __init__(self, name: str, ptype: int):
         self.board_enc = BoardEncoding()
-        
+        #  self.empty = 0
+        # self.dark = 10
+        # self.dark_king = 11
+        # self.light = 20
+        # self.light_king = 21
+
         if ptype == Constants().DARK:
 
-            self.board_enc.dark = 1
-            self.board_enc.light = -1
-        elif ptype == Constants().LIGHT:
+            self.board_enc.dark = 0.5
+            self.board_enc.light = -0.5
+            self.baord_enc.dark_king = 1.
+            self.board_enc.light_king = -1.
 
-            self.board_enc.dark = -1
-            self.board_enc.light = 1
+        elif ptype == Constants().LIGHT:
+            
+            self.board_enc.dark = -0.5
+            self.board_enc.light = 0.5
+            self.baord_enc.dark_king = -1.
+            self.board_enc.light_king = 1.
         else:
             raise ValueError
 
@@ -51,10 +60,10 @@ class DQNChecker(Agent):
         self.epsilon_decay = 0.9999
         self.epsilon_min = 0.01
         self.batch_size = 64
-        self.train_start = 1000
+        self.train_start = 3000
 
         # 리플레이 메모리, 최대 크기 2000
-        self.memory = deque(maxlen=4000)
+        self.memory = deque(maxlen=2000)
 
         # 모델과 타깃 모델 생성
         self.model = self.build_model()
