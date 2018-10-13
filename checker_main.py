@@ -74,7 +74,7 @@ if __name__ == "__main__":
                 history[current_agent]['scores'].append(score)
                 history[current_agent]['episodes'].append(e)
 
-                pylab.plot(episodes, scores, 'b')
+                pylab.plot(history[current_agent]['scores'], history[current_agent]['episodes'], 'b')
                 pylab.savefig("./save_graph/agent1/checker_dqn.png")
                 print("episode:", e, "  score:", score, "  memory length:",
                       len(current_agent.memory), "  epsilon:", current_agent.epsilon)

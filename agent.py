@@ -14,7 +14,7 @@ from typing import Tuple
 from seoulai_gym.envs.checkers.agents import Agent
 from seoulai_gym.envs.checkers.base import Constants
 from seoulai_gym.envs.checkers.rules import Rules
-#from seoulai_gym.envs.checkers.utils import generate_random_move
+from seoulai_gym.envs.checkers.utils import generate_random_move
 from seoulai_gym.envs.checkers.utils import board_list2numpy
 from seoulai_gym.envs.checkers.utils import BoardEncoding
 
@@ -135,7 +135,13 @@ class DQNChecker(Agent):
         enc.dark = 1
         enc.light = -1
         board_numpy = board_list2numpy(state, enc)
-        action = self.model.predict(board_numpy)[0]
+        board_numpy = np.reshape(board_numpy, (-1, 8, 8, 1))
+
+        if np.random.rand() <= self.epsilon:
+            action = generate_random_move(state, self.ptype, len(state))
+        else:
+            action = self.model.predict(state)[0]
+            #action = np.argmax(q_value[0])
         
         return action[0], action[1], action[2], action[3]
 
