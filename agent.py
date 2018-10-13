@@ -63,7 +63,7 @@ class DQNChecker(Agent):
         self.train_start = 3000
 
         # 리플레이 메모리, 최대 크기 2000
-        self.memory = deque(maxlen=2000)
+        self.memory = deque(maxlen=4000)
 
         # 모델과 타깃 모델 생성
         self.model = self.build_model()
