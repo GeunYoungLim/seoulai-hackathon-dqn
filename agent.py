@@ -124,12 +124,12 @@ class DQNChecker(Agent):
         # 벨만 최적 방정식을 이용한 업데이트 타깃
         for i in range(self.batch_size):
             if dones[i]:
-                for action in actions[i]:
-                    target[i][action] = rewards[i]
+                for classes, action in enumerate(actions[i]):
+                    target[i][classes][action] = rewards[i]
             else:
                 for classes, action in enumerate(actions[i]):
                     target_action = self.get_action_index(target_val[i][0])
-                    target[i][action] = rewards[i] + self.discount_factor * (np.amax(target_action[classes]))
+                    target[i][classes][action] = rewards[i] + self.discount_factor * (np.amax(target_action[classes]))
 
         self.model.fit(states, target, batch_size=self.batch_size,
                        epochs=1, verbose=0)
