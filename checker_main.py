@@ -17,15 +17,21 @@ if __name__ == "__main__":
     args = argparse.ArgumentParser()
     args.add_argument('--render', type=bool, default=False)
     args.add_argument('--episodes', type=int, default=3000)
-    args.add_argument('--thresold', type=int, default=2500)
+    args.add_argument('--train', type=bool, default=False)
+    args.add_argument('--thresold', type=int, default=3000)
 
     config = args.parse_args()
 
     env = gym.make("Checkers")
 
-    a1 = DQNChecker("Agent_1", Constants().DARK)
-    a2 = DQNChecker("Agent_2", Constants().LIGHT)
+    
 
+    if config.train:
+        a1 = DQNChecker("Agent_1", Constants().DARK, True, 0.3)
+        a2 = DQNChecker("Agent_2", Constants().LIGHT, True, 0.3)
+    else:
+        a1 = DQNChecker("Agent_1", Constants().DARK, True, 0.0)
+        a2 = DQNChecker("Agent_2", Constants().LIGHT, True, 0.0)
     history = {}
     history[a1] = {'scores': [], 'episodes': []}
     history[a2] = {'scores': [], 'episodes': []}

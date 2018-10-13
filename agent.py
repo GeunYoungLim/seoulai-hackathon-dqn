@@ -19,7 +19,7 @@ from seoulai_gym.envs.checkers.utils import board_list2numpy
 from seoulai_gym.envs.checkers.utils import BoardEncoding
 
 class DQNChecker(Agent):
-    def __init__(self, name: str, ptype: int):
+    def __init__(self, name: str, ptype: int, load_model: bool = True, epsilon: float = 0.0):
         self.board_enc = BoardEncoding()
         if ptype == Constants().DARK:
 
@@ -40,7 +40,7 @@ class DQNChecker(Agent):
         super().__init__(name, ptype)
 
         self.render = False
-        self.load_model = False
+        self.load_model = load_model
  
         # 상태와 행동의 크기 정의
         #self.state_size = (8, 8, 1)
@@ -49,7 +49,7 @@ class DQNChecker(Agent):
         # DQN 하이퍼파라미터
         self.discount_factor = 0.99
         self.learning_rate = 0.001
-        self.epsilon = 1.0
+        self.epsilon = epsilon
         self.epsilon_decay = 0.9999
         self.epsilon_min = 0.01
         self.batch_size = 64
@@ -68,12 +68,8 @@ class DQNChecker(Agent):
         print('model load complete.',name)
 
         if self.load_model:
-            self.model.load_weights("./save_model/cartpole_dqn_trained.h5")
+            self.model.load_weights("./save_model/checker_dqn.h5")
 
-        self.training_mode = False
-
-    def set_training_mode(self, is_training):
-        self.is_training = is_training
 
     # 상태가 입력, 큐함수가 출력인 인공신경망 생성
     def build_model(self):
@@ -144,7 +140,7 @@ class DQNChecker(Agent):
         state = board_list2numpy(state, self.board_enc)
         state = np.reshape(state, (-1, 8, 8, 1))
 
-        if self.training_mode and np.random.rand() <= self.epsilon:
+        if np.random.rand() <= self.epsilon:
             valid_moves = Rules.generate_valid_moves(raw_state, self.ptype, len(raw_state))
             rand_from_row, rand_from_col = random.choice(list(valid_moves.keys()))
             rand_to_row, rand_to_col = random.choice(valid_moves[(rand_from_row, rand_from_col)])
@@ -170,6 +166,8 @@ class DQNChecker(Agent):
         return int(action[0]), int(action[1]), int(action[2]), int(action[3])
     def consume(self, obs: List[List], reward: float, done: bool, **kwargs):
     #def consume(self, state, action, next_state, reward: float, done: bool):
+        if not self.epsilon > 0:
+            return
         for key in ['action', 'next_state'] :
             if key not in kwargs:
                 print('not train')
