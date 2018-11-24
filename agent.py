@@ -51,7 +51,7 @@ class DQNChecker(Agent):
         self.learning_rate = 0.001
         self.epsilon = epsilon
         self.epsilon_decay = 0.9999
-        self.epsilon_min = 0.01
+        self.epsilon_min = 0.00
         self.batch_size = 64
         self.train_start = 3000
 
@@ -64,9 +64,7 @@ class DQNChecker(Agent):
 
         # 타깃 모델 초기화
         self.update_target_model()
-
-        print('model load complete.',name)
-
+        
         if self.load_model:
             self.model.load_weights("./save_model/checker_dqn.h5")
 

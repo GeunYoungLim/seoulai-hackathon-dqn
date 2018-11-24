@@ -27,8 +27,8 @@ if __name__ == "__main__":
     
 
     if config.train:
-        a1 = DQNChecker("Agent_1", Constants().DARK, True, 0.3)
-        a2 = DQNChecker("Agent_2", Constants().LIGHT, True, 0.3)
+        a1 = DQNChecker("Agent_1", Constants().DARK, True, 0.1)
+        a2 = DQNChecker("Agent_2", Constants().LIGHT, True, 0.1)
     else:
         a1 = DQNChecker("Agent_1", Constants().DARK, True, 0.0)
         a2 = DQNChecker("Agent_2", Constants().LIGHT, True, 0.0)
